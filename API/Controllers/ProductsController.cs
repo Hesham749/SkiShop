@@ -18,7 +18,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            return await _context.Products.ToListAsync();
+            return Ok(await _context.Products.ToListAsync());
         }
 
         [HttpGet("{id:int}")]
@@ -26,7 +26,7 @@ namespace API.Controllers
         {
             var product = await _context.Products.FindAsync(id);
             if (product is null) return NotFound();
-            return product;
+            return Ok(product);
         }
 
         [HttpPost]
@@ -34,7 +34,7 @@ namespace API.Controllers
         {
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
-            return product;
+            return CreatedAtAction(nameof(GetProduct), new { product.Id }, product);
         }
 
         [HttpPut("{id:int}")]
