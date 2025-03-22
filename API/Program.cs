@@ -1,3 +1,6 @@
+using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace API
 {
     public class Program
@@ -11,6 +14,11 @@ namespace API
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+            builder.Services.AddDbContext<StoreContext>(op =>
+            {
+                op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
 
             var app = builder.Build();
 
