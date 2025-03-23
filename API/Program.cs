@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -5,7 +7,7 @@ namespace API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,7 @@ namespace API
                 op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
             var app = builder.Build();
 
@@ -32,6 +35,23 @@ namespace API
             //app.UseAuthorization();
 
             app.MapControllers();
+
+            try
+            {
+                using var scope = app.Services.CreateScope();
+                var context = scope.ServiceProvider.GetService<StoreContext>();
+                if (context is not null)
+                {
+                    await context.Database.MigrateAsync();
+                    await StoreContextSeed.SeedProductsAsync(context);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
 
             app.Run();
         }
