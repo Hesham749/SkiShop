@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using Core.Entities;
 
 namespace Infrastructure.Data
@@ -17,7 +11,7 @@ namespace Infrastructure.Data
             {
                 var productsData = await File.ReadAllTextAsync("../Infrastructure/Data./SeedData/products.json");
 
-                var products = JsonSerializer.Deserialize<List<Product>>(productsData);
+                var products = JsonSerializer.Deserialize<IReadOnlyList<Product>>(productsData);
                 if (products is null) return;
 
                 context.AddRange(products);
