@@ -17,6 +17,13 @@ namespace Infrastructure.Data
 
         public async Task AddAsync(T entity) => await _db.AddAsync(entity);
 
+        public async Task<int> CountAsync(ISpecification<T> spec)
+        {
+            var query = _db.AsQueryable();
+            query = spec.ApplyCriteria(query);
+            return await query.CountAsync();
+        }
+
         public void Delete(T entity) => _db.Remove(entity);
 
         public Task<bool> Exists(int id) => _db.AnyAsync(x => x.Id == id);
@@ -28,13 +35,13 @@ namespace Infrastructure.Data
             return await ApplySecifications(spec).FirstOrDefaultAsync();
         }
 
-        public async Task<TResult?> GetEntityWithSpecAsync<TResult>(ISpecification<T, TResult> spec) 
+        public async Task<TResult?> GetEntityWithSpecAsync<TResult>(ISpecification<T, TResult> spec)
             => await ApplySecifications(spec).FirstOrDefaultAsync();
 
         public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
             => await ApplySecifications(spec).ToListAsync();
 
-        public async Task<IReadOnlyList<TResult>> ListAsync<TResult>(ISpecification<T, TResult> spec) 
+        public async Task<IReadOnlyList<TResult>> ListAsync<TResult>(ISpecification<T, TResult> spec)
             => await ApplySecifications(spec).ToListAsync();
 
         public async Task<bool> SaveAllAsync() => await _context.SaveChangesAsync() > 0;
