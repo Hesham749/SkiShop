@@ -47,7 +47,7 @@ namespace Core.Specifications
         }
     }
 
-    public class BaseSpecification<T, TResult>(Expression<Func<T, bool>>? criteria = null)
+    public abstract class BaseSpecification<T, TResult>(Expression<Func<T, bool>>? criteria = null)
         : BaseSpecification<T>(criteria), ISpecification<T, TResult>
     {
         public Expression<Func<T, TResult>>? Select { get; private set; }
