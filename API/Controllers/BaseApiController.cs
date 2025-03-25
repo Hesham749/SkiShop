@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     [Consumes("application/json")]
     [Produces("application/json")]
     public class BaseApiController : ControllerBase
