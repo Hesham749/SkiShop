@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using API.Middleware;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,8 @@ namespace API
                 op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.AddCors();
+
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
@@ -31,9 +34,16 @@ namespace API
             {
                 app.MapOpenApi();
             }
+            app.UseMiddleware<ExceptionMiddleware>();
             //app.UseHttpsRedirection();
 
             //app.UseAuthorization();
+
+            app.UseCors(op =>
+            {
+                op.AllowAnyHeader().AllowAnyMethod()
+                .WithOrigins("https://localhost:4200", "http://localhost:4200");
+            });
 
             app.MapControllers();
 

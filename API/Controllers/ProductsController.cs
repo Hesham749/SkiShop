@@ -1,4 +1,5 @@
-﻿using API.RequestHelper;
+﻿using API.DTOs;
+using API.RequestHelper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications.ProductSpecifications;
