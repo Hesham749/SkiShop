@@ -2,6 +2,7 @@ using System.Security.Cryptography.Xml;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using API.Middleware;
+using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Services;
@@ -17,6 +18,7 @@ namespace API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddSwaggerGen();
 
             builder.Services.AddControllers().AddJsonOptions(op =>
             {
@@ -42,6 +44,13 @@ namespace API
                 return ConnectionMultiplexer.Connect(configuration);
             });
             builder.Services.AddSingleton<ICartService, CartService>();
+            builder.Services.AddIdentityApiEndpoints<AppUser>(op =>
+            {
+                op.User.RequireUniqueEmail = true;
+
+            }).AddEntityFrameworkStores<StoreContext>();
+
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -49,19 +58,26 @@ namespace API
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
             app.UseMiddleware<ExceptionMiddleware>();
+
+
             //app.UseHttpsRedirection();
+
 
             //app.UseAuthorization();
 
             app.UseCors(op =>
             {
-                op.AllowAnyHeader().AllowAnyMethod()
+                op.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
                 .WithOrigins("https://localhost:4200", "http://localhost:4200");
             });
 
             app.MapControllers();
+            app.MapGroup("api").MapIdentityApi<AppUser>();
+
 
             try
             {
