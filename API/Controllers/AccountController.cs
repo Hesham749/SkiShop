@@ -47,7 +47,7 @@ namespace API.Controllers
         {
             await _signInManager.SignOutAsync();
 
-            return NoContent();
+            return Ok();
         }
 
 
