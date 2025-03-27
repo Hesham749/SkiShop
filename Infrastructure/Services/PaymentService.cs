@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Entities;
@@ -14,6 +16,9 @@ namespace Infrastructure.Services
     public class PaymentService(IConfiguration config, ICartService cartService,
         IGenericRepository<Core.Entities.Product> productRepo, IGenericRepository<DeliveryMethod> dmRepo) : IPaymentService
     {
+
+        private readonly PaymentIntentService _service = new();
+
         public async Task<ShoppingCart?> CreateOrUpdatePaymentIntent(string cartId)
         {
             StripeConfiguration.ApiKey = config["StripeSettings:SecretKey"];
@@ -24,7 +29,7 @@ namespace Infrastructure.Services
             var shippingPrice = 0m;
             if (cart.DeliveryMethodId.HasValue)
             {
-                var dm = await dmRepo.GetByIdAsync((int)cart.DeliveryMethodId);
+                var dm = await dmRepo.GetByIdAsync(cart.DeliveryMethodId.Value);
                 if (dm is null) return null;
 
                 shippingPrice = dm.Price;
@@ -34,29 +39,28 @@ namespace Infrastructure.Services
 
             foreach (CartItem item in cart.Items)
             {
-                if (item is null) return null;  // ToDo maybe chang to continue
-
                 var productSpec = new ProductPriceSpecification(item.ProductId);
-                item.Price = await productRepo.GetEntityWithSpecAsync(productSpec);
+                var productPrice = await productRepo.GetEntityWithSpecAsync(productSpec);
+
+                if (!productPrice.HasValue) return null;
+
+                item.Price = productPrice.Value;
 
                 TotalPayment += (item.Price * 100 * item.Quantity);
             }
 
-            var service = new PaymentIntentService();
             PaymentIntent? intent;
 
             if (string.IsNullOrWhiteSpace(cart.PaymentIntentId)
-                || !await PaymentIntentExists(cart.PaymentIntentId, service))
+                || !await PaymentIntentExists(cart.PaymentIntentId))
             {
-                intent = await CreateIntentAsync(shippingPrice,
-                    TotalPayment, service);
+                intent = await CreateIntentAsync(shippingPrice, TotalPayment);
 
                 cart.PaymentIntentId = intent.Id;
             }
             else
             {
-                intent = await UpdateIntentAsync(cart, shippingPrice,
-                    TotalPayment, service);
+                intent = await UpdateIntentAsync(cart, shippingPrice, TotalPayment);
             }
 
             cart.ClientSecret = intent.ClientSecret;
@@ -66,21 +70,25 @@ namespace Infrastructure.Services
 
         }
 
-        private static async Task<bool> PaymentIntentExists(string paymentIntentId, PaymentIntentService service)
+        private async Task<bool> PaymentIntentExists(string paymentIntentId)
         {
             try
             {
-                await service.GetAsync(paymentIntentId);
+                await _service.GetAsync(paymentIntentId);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex) when (ex.Message.Contains("No such payment_intent"))
             {
                 return false;
             }
+            catch
+            {
+                throw;
+            }
         }
 
-        private static async Task<PaymentIntent> UpdateIntentAsync(ShoppingCart cart, decimal shippingPrice,
-            decimal TotalPayment, PaymentIntentService service)
+        private async Task<PaymentIntent> UpdateIntentAsync(ShoppingCart cart, decimal shippingPrice,
+            decimal TotalPayment)
         {
             PaymentIntent? intent;
             var option = new PaymentIntentUpdateOptions
@@ -88,12 +96,12 @@ namespace Infrastructure.Services
                 Amount = (long)(TotalPayment + shippingPrice),
             };
 
-            intent = await service.UpdateAsync(cart.PaymentIntentId, option);
+            intent = await _service.UpdateAsync(cart.PaymentIntentId, option);
             return intent;
         }
 
-        private static async Task<PaymentIntent> CreateIntentAsync(decimal shippingPrice,
-            decimal TotalPayment, PaymentIntentService service)
+        private async Task<PaymentIntent> CreateIntentAsync(decimal shippingPrice,
+            decimal TotalPayment)
         {
             PaymentIntent? intent;
             var option = new PaymentIntentCreateOptions
@@ -103,7 +111,7 @@ namespace Infrastructure.Services
                 PaymentMethodTypes = ["card"]
             };
 
-            intent = await service.CreateAsync(option);
+            intent = await _service.CreateAsync(option);
 
             return intent;
         }

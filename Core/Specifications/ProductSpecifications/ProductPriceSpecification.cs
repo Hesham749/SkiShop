@@ -7,7 +7,7 @@ using Core.Entities;
 
 namespace Core.Specifications.ProductSpecifications
 {
-    public class ProductPriceSpecification : BaseSpecification<Product, decimal>
+    public class ProductPriceSpecification : BaseSpecification<Product, decimal?>
     {
         public ProductPriceSpecification(int id) : base(p => p.Id == id)
         {
