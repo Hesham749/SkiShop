@@ -1,27 +1,27 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿ using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs
 {
-    public class CreateProductDto
-    {
+    public record CreateProductDto
+    (
         [Required, StringLength(250, MinimumLength = 3)]
-        public string Name { get; set; } = string.Empty;
+         string Name,
 
         [Required, StringLength(250, MinimumLength = 3)]
-        public string Description { get; set; } = string.Empty;
+         string Description,
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0")]
-        public decimal Price { get; set; }
+         decimal Price,
 
         [Required, StringLength(250, MinimumLength = 3)]
-        public string PictureUrl { get; set; } = string.Empty;
+         string PictureUrl,
 
         [Required, StringLength(250, MinimumLength = 3)]
-        public string Type { get; set; } = string.Empty;
+         string Type,
 
         [Required, StringLength(250, MinimumLength = 3)]
-        public string Brand { get; set; } = string.Empty;
+         string Brand,
         [Range(0, int.MaxValue, ErrorMessage = "Quantity in stock must be at least 1")]
-        public int QuantityInStock { get; set; }
-    }
+         int QuantityInStock
+    );
 }

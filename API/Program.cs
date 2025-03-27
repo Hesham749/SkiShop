@@ -6,6 +6,7 @@ using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Services;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -43,14 +44,17 @@ namespace API
 
                 return ConnectionMultiplexer.Connect(configuration);
             });
-            builder.Services.AddSingleton<ICartService, CartService>();
             builder.Services.AddIdentityApiEndpoints<AppUser>(op =>
             {
                 op.User.RequireUniqueEmail = true;
 
             }).AddEntityFrameworkStores<StoreContext>();
 
-            builder.Services.AddAuthorization();
+            builder.Services.AddSingleton<ICartService, CartService>();
+
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+            //builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -86,7 +90,7 @@ namespace API
                 if (context is not null)
                 {
                     await context.Database.MigrateAsync();
-                    await StoreContextSeed.SeedProductsAsync(context);
+                    await StoreContextSeed.SeedAsync(context);
                 }
 
             }

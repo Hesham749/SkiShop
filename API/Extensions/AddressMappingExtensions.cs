@@ -8,16 +8,15 @@ namespace API.Extensions
         public static AddressDto ToDto(this Address address)
         {
             ArgumentNullException.ThrowIfNull(address);
-            return new()
-            {
-                City = address.City,
-                Line1 = address.Line1,
-                Country = address.Country,
-                Line2 = address.Line2,
-                PostalCode = address.PostalCode,
-                State = address.State,
+            return new AddressDto(
+                    address.Line1,
+                    address.Line2,
+                    address.City,
+                    address.State,
+                    address.PostalCode,
+                     address.Country
+                            );
 
-            };
         }
 
         public static Address ToEntity(this AddressDto addressDto)

@@ -2,24 +2,24 @@
 
 namespace API.DTOs
 {
-    public class AddressDto
-    {
+    public record AddressDto
+    (
         [Required, MaxLength(250)]
-        public string Line1 { get; set; } = string.Empty;
+         string Line1,
 
         [MaxLength(250)]
-        public string? Line2 { get; set; }
+         string? Line2,
 
         [Required, MaxLength(250)]
-        public string City { get; set; } = string.Empty;
+         string City,
 
         [Required, MaxLength(250)]
-        public string State { get; set; } = string.Empty;
+         string State,
 
         [Required, MaxLength(250)]
-        public string PostalCode { get; set; } = string.Empty;
+         string PostalCode,
 
         [Required, MaxLength(250)]
-        public string Country { get; set; } = string.Empty;
-    }
+         string Country
+    );
 }

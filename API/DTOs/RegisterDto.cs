@@ -2,22 +2,22 @@
 
 namespace API.DTOs
 {
-    public class RegisterDto
-    {
+    public record RegisterDto
+    (
         [Required]
 
-        public string FirstName { get; set; } = string.Empty;
+         string FirstName,
 
         [Required]
-        public string LastName { get; set; } = string.Empty;
+         string LastName,
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; } = string.Empty;
+         string Email,
 
 
         [Required]
-        public string Password { get; set; } = string.Empty;
+         string Password
 
-    }
+    );
 }
