@@ -6,11 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Entities;
 using Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Specification
 {
     public class SpecificationEvaluator<T>
+        where T : BaseEntity
     {
+
         public static IQueryable<T> GetQuery(IQueryable<T> query, ISpecification<T> spec)
         {
             if (spec.Criteria is not null)
@@ -27,6 +30,12 @@ namespace Infrastructure.Specification
 
             if (spec.IsPagingEnabled)
                 query = query.Skip(spec.Skip).Take(spec.Take);
+
+            query = spec.Includes.Aggregate(query, (current, include)
+                => current.Include(include));
+
+            query = spec.IncludeStrings.Aggregate(query, (current, include) 
+                => current.Include(include));
 
             return query;
         }

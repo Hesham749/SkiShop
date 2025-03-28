@@ -11,8 +11,10 @@ namespace API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class PaymentsController(IPaymentService paymentService
-        , IGenericRepository<DeliveryMethod> dmRepo) : BaseApiController
+        , IUnitOfWork unit) : BaseApiController
     {
+        private readonly IUnitOfWork _unit = unit;
+
         [Authorize]
         [HttpPost("{cartId}")]
         public async Task<ActionResult<ShoppingCart>> CreateOrUpdatePaymentIntent(string cartId)
@@ -26,7 +28,7 @@ namespace API.Controllers
         [HttpGet("delivery-methods")]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
         {
-            return Ok(await dmRepo.SaveAllAsync());
+            return Ok(await _unit.Repository<DeliveryMethod>().ListAllAsync());
         }
     }
 }

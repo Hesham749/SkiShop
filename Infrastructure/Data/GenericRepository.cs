@@ -44,7 +44,7 @@ namespace Infrastructure.Data
         public async Task<IReadOnlyList<TResult>> ListAsync<TResult>(ISpecification<T, TResult> spec)
             => await ApplySecifications(spec).ToListAsync();
 
-        public async Task<bool> SaveAllAsync() => await _context.SaveChangesAsync() > 0;
+        public async Task<IReadOnlyList<T>> ListAllAsync() => await _db.ToListAsync();
 
         public void Update(T entity) => _db.Update(entity);
 

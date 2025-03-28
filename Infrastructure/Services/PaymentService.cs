@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using Core.Entities;
+﻿using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications.ProductSpecifications;
 using Microsoft.Extensions.Configuration;
@@ -14,22 +7,23 @@ using Stripe;
 namespace Infrastructure.Services
 {
     public class PaymentService(IConfiguration config, ICartService cartService,
-        IGenericRepository<Core.Entities.Product> productRepo, IGenericRepository<DeliveryMethod> dmRepo) : IPaymentService
+        IUnitOfWork unit) : IPaymentService
     {
 
         private readonly PaymentIntentService _service = new();
+        private readonly IUnitOfWork _unit = unit;
 
         public async Task<ShoppingCart?> CreateOrUpdatePaymentIntent(string cartId)
         {
             StripeConfiguration.ApiKey = config["StripeSettings:SecretKey"];
 
             var cart = await cartService.GetCartAsync(cartId);
-
+            if (cart is null) return null;
 
             var shippingPrice = 0m;
             if (cart.DeliveryMethodId.HasValue)
             {
-                var dm = await dmRepo.GetByIdAsync(cart.DeliveryMethodId.Value);
+                var dm = await _unit.Repository<DeliveryMethod>().GetByIdAsync(cart.DeliveryMethodId.Value);
                 if (dm is null) return null;
 
                 shippingPrice = dm.Price;
@@ -37,10 +31,15 @@ namespace Infrastructure.Services
 
             decimal TotalPayment = 0;
 
+            if (cart.Items.Count == 0) return null;
+
             foreach (CartItem item in cart.Items)
             {
+                if (item is null) continue;
+
                 var productSpec = new ProductPriceSpecification(item.ProductId);
-                var productPrice = await productRepo.GetEntityWithSpecAsync(productSpec);
+                var productPrice = await _unit.Repository<Core.Entities.Product>()
+                    .GetEntityWithSpecAsync(productSpec);
 
                 if (!productPrice.HasValue) return null;
 

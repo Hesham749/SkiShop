@@ -15,14 +15,17 @@ namespace API.Controllers
         public async Task<ActionResult<ShoppingCart>> GetCartById([FromQuery] string id)
         {
             var cart = await _cartService.GetCartAsync(id);
-            return Ok(cart);
+
+            return Ok(cart ?? new() { Id = id });
         }
 
         [HttpPost]
         public async Task<ActionResult<ShoppingCart>> UpdateCart(ShoppingCart cart)
         {
-            var UpdatedCart = await _cartService.SetCartAsync(cart);
-            return Ok(UpdatedCart);
+            var updatedCart = await _cartService.SetCartAsync(cart);
+            if (updatedCart == null) return BadRequest("Problem with cart");
+
+            return Ok(updatedCart);
         }
 
         [HttpDelete]

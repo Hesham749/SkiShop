@@ -8,18 +8,18 @@ namespace Core.Specifications.ProductSpecifications
 {
     public class ProductSpecParams
     {
-        private List<string> _brands = [];
+        private ICollection<string> _brands = [];
 
-        public List<string> Brands
+        public ICollection<string> Brands
         {
             get => _brands;
             set => _brands = [.. value.SelectMany(b=>b.Split(',',
                     StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))];
         }
 
-        private List<string> _Types = [];
+        private ICollection<string> _Types = [];
 
-        public List<string> Types
+        public ICollection<string> Types
         {
             get => _Types;
             set => _Types = [.. value.SelectMany(b=>b.Split(',',

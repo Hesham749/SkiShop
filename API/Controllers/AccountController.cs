@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using API.DTOs;
-using API.Extensions;
+using Core.DTOs;
 using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -66,7 +65,7 @@ namespace API.Controllers
                 Address = user.Address?.ToDto(),
             });
         }
-
+        
         [HttpGet]
         public ActionResult GetAuthState()
         {
