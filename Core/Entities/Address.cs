@@ -1,6 +1,8 @@
-﻿namespace Core.Entities
+﻿using Core.Interfaces;
+
+namespace Core.Entities
 {
-    public class Address : BaseEntity
+    public class Address : BaseEntity , IDtoConvertible
     {
         public required string Line1 { get; set; }
         public string? Line2 { get; set; }

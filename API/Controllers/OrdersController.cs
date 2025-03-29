@@ -86,7 +86,7 @@ namespace API.Controllers
 
             await _unit.Repository<Order>().AddAsync(order);
 
-            if (await _unit.CompleteAsync()) 
+            if (await _unit.CompleteAsync())
                 return CreatedAtAction(nameof(GetUserOrederById), new { order.Id }, order.ToDto());
 
             return BadRequest($"Problem creating order");
@@ -94,19 +94,20 @@ namespace API.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetOrdersForUser()
+        public async Task<ActionResult<OrderDto>> GetOrdersForUser()
         {
-            var spec = new OrederSpecification(User.GetUserEmail());
+            var spec = new OrderSpecification(User.GetUserEmail());
 
             var orders = await _unit.Repository<Order>().ListAsync(spec);
 
             return Ok(orders);
+
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<OrderDto>> GetUserOrederById(int id)
         {
-            var spec = new OrederSpecification(User.GetUserEmail(), id);
+            var spec = new OrderSpecification(User.GetUserEmail(), id);
 
             var order = await _unit.Repository<Order>().GetEntityWithSpecAsync(spec);
 

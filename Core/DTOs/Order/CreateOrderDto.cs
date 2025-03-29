@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Core.Entities.OrderAggregate;
+using Core.Interfaces;
 
 namespace Core.DTOs.Order
 {
@@ -8,6 +9,6 @@ namespace Core.DTOs.Order
         [Required] int? DeliveryMethodId,
         ShippingAddress ShippingAddress,
         PaymentSummary PaymentSummary
-        );
+        ) : IDto;
 
 }

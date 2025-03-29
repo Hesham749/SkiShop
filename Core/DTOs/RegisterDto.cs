@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Core.Interfaces;
 
 namespace Core.DTOs
 {
@@ -19,5 +20,5 @@ namespace Core.DTOs
         [Required]
          string Password
 
-    );
+    ) : IDto;
 }

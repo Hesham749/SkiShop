@@ -17,7 +17,7 @@ namespace Core.Specifications.ProductSpecifications
             (specParams.Types.Count == 0 || specParams.Types.Contains(p.Type))
             )
         {
-            AddPagination(((specParams.PageIndex - 1) * specParams.PageSize), specParams.PageSize);
+            AddPagination(specParams.PageIndex, specParams.PageSize);
 
             switch (specParams.Sort)
             {

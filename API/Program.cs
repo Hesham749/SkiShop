@@ -6,6 +6,7 @@ using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -49,7 +50,8 @@ namespace API
             {
                 op.User.RequireUniqueEmail = true;
 
-            }).AddEntityFrameworkStores<StoreContext>();
+            }).AddRoles<IdentityRole>()
+              .AddEntityFrameworkStores<StoreContext>();
 
             builder.Services.AddSingleton<ICartService, CartService>();
 
@@ -88,11 +90,10 @@ namespace API
             {
                 using var scope = app.Services.CreateScope();
                 var context = scope.ServiceProvider.GetService<StoreContext>();
-                if (context is not null)
-                {
-                    await context.Database.MigrateAsync();
-                    await StoreContextSeed.SeedAsync(context);
-                }
+                var userManager = scope.ServiceProvider.GetService<UserManager<AppUser>>();
+
+                await context!.Database.MigrateAsync();
+                await StoreContextSeed.SeedAsync(context, userManager);
 
             }
             catch (Exception ex)

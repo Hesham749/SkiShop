@@ -2,18 +2,18 @@
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications.ProductSpecifications;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
     public class ProductsController(IUnitOfWork unit) : BaseApiController
     {
         private readonly IUnitOfWork _unit = unit;
 
         [HttpGet]
-        public async Task<ActionResult<Pagination<Product>>> GetProducts([FromQuery] ProductSpecParams specParams)
+        public async Task<ActionResult<Product>> GetProducts([FromQuery] ProductSpecParams specParams)
         {
             var spec = new ProductSpecification(specParams);
 
@@ -44,6 +44,8 @@ namespace API.Controllers
             return Ok(await _unit.Repository<Product>().ListAsync(spec));
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct(Product product)
         {
@@ -53,6 +55,7 @@ namespace API.Controllers
             return BadRequest("Problem creating product");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateProduct(int id, Product product)
         {
@@ -64,6 +67,7 @@ namespace API.Controllers
             return BadRequest("problem updating product");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteProduct(int id)
         {

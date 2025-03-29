@@ -3,3 +3,7 @@ global using Core.Entities;
 global using Core.DTOs.Order;
 global using API.Extensions;
 global using Core.Extensions;
+global using Core.Entities.OrderAggregate;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Mvc;
+global using Core.Specifications.OrderSpecifications;

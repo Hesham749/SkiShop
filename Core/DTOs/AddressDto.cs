@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Core.Interfaces;
 
 namespace Core.DTOs
 {
@@ -21,5 +22,5 @@ namespace Core.DTOs
 
         [Required, MaxLength(250)]
          string Country
-    );
+    ) :IDto;
 }

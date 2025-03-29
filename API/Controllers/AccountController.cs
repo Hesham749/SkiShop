@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
     public class AccountController(SignInManager<AppUser> signInManager) : BaseApiController
     {
         private readonly SignInManager<AppUser> _signInManager = signInManager;
@@ -31,6 +30,16 @@ namespace API.Controllers
             if (!Created.Succeeded)
             {
                 foreach (var error in Created.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+                return ValidationProblem();
+            }
+
+            var AddedToRole = await _signInManager.UserManager.AddToRoleAsync(user, "Customer");
+            if (!AddedToRole.Succeeded)
+            {
+                foreach (var error in AddedToRole.Errors)
                 {
                     ModelState.AddModelError(error.Code, error.Description);
                 }
@@ -63,9 +72,11 @@ namespace API.Controllers
                 user.LastName,
                 user.Email,
                 Address = user.Address?.ToDto(),
+                IsAdmin = User.IsInRole("Admin"),
+                Roles = await _signInManager.UserManager.GetRolesAsync(user),
             });
         }
-        
+
         [HttpGet]
         public ActionResult GetAuthState()
         {

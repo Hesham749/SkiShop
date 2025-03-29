@@ -6,18 +6,28 @@ using Stripe;
 
 namespace Infrastructure.Services
 {
-    public class PaymentService(IConfiguration config, ICartService cartService,
-        IUnitOfWork unit) : IPaymentService
+    public class PaymentService : IPaymentService
     {
 
-        private readonly PaymentIntentService _service = new();
-        private readonly IUnitOfWork _unit = unit;
+        private readonly PaymentIntentService _service;
+        private readonly IConfiguration _config;
+        private readonly ICartService _cartService;
+        private readonly IUnitOfWork _unit;
+
+        public PaymentService(IConfiguration config, ICartService cartService, IUnitOfWork unit)
+        {
+            _config = config;
+            _cartService = cartService;
+            _unit = unit;
+            _service = new();
+            StripeConfiguration.ApiKey = _config["StripeSettings:SecretKey"];
+        }
 
         public async Task<ShoppingCart?> CreateOrUpdatePaymentIntent(string cartId)
         {
-            StripeConfiguration.ApiKey = config["StripeSettings:SecretKey"];
 
-            var cart = await cartService.GetCartAsync(cartId);
+
+            var cart = await _cartService.GetCartAsync(cartId);
             if (cart is null) return null;
 
             var shippingPrice = 0m;
@@ -64,7 +74,7 @@ namespace Infrastructure.Services
 
             cart.ClientSecret = intent.ClientSecret;
 
-            await cartService.SetCartAsync(cart);
+            await _cartService.SetCartAsync(cart);
             return cart;
 
         }
@@ -113,6 +123,20 @@ namespace Infrastructure.Services
             intent = await _service.CreateAsync(option);
 
             return intent;
+        }
+
+        public async Task<string> RefundPayment(string PaymentIntentId)
+        {
+            var refundOption = new RefundCreateOptions
+            {
+                PaymentIntent = PaymentIntentId
+            };
+
+            var refundService = new RefundService();
+
+            var result = await refundService.CreateAsync(refundOption);
+
+            return result.Status;
         }
     }
 }

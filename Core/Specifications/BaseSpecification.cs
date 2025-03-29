@@ -36,10 +36,10 @@ namespace Core.Specifications
 
         protected void AddDistinct() => IsDistinct = true;
 
-        protected void AddPagination(int skip, int take)
+        protected void AddPagination(int pageIndex, int pageSize)
         {
-            Skip = skip;
-            Take = take;
+            Skip = (pageIndex - 1) * pageSize;
+            Take = pageSize;
             IsPagingEnabled = true;
         }
 
