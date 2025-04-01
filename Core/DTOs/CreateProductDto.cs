@@ -24,5 +24,5 @@ namespace Core.DTOs
          string Brand,
         [Range(0, int.MaxValue, ErrorMessage = "Quantity in stock must be at least 1")]
          int QuantityInStock
-    ) :IDto;
+    ) : IDto;
 }

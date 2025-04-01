@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Core.Entities.OrderAggregate;
 using Core.Interfaces;
 
 namespace Core.DTOs.Order

@@ -22,5 +22,5 @@ namespace Core.DTOs
 
         [Required, MaxLength(250)]
          string Country
-    ) :IDto;
+    ) : IDto;
 }

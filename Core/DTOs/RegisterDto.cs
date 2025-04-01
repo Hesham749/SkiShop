@@ -16,7 +16,6 @@ namespace Core.DTOs
         [EmailAddress]
          string Email,
 
-
         [Required]
          string Password
 
