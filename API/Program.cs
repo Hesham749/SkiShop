@@ -84,10 +84,10 @@ namespace API
             try
             {
                 using var scope = app.Services.CreateScope();
-                var context = scope.ServiceProvider.GetService<StoreContext>();
-                var userManager = scope.ServiceProvider.GetService<UserManager<AppUser>>();
+                var context = scope.ServiceProvider.GetRequiredService<StoreContext>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
-                await context!.Database.MigrateAsync();
+                await context.Database.MigrateAsync();
                 await StoreContextSeed.SeedAsync(context, userManager);
 
             }
