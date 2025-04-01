@@ -1,13 +1,9 @@
-using System.Security.Cryptography.Xml;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using API.Middleware;
-using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -34,7 +30,6 @@ namespace API
             });
 
             builder.Services.AddCors();
-            builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
