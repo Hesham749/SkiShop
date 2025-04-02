@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using Core.Entities;
 using Core.Interfaces;
 
@@ -17,7 +12,8 @@ namespace Infrastructure.Data
 
         public void Dispose() => context.Dispose();
 
-        public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity
+        public IGenericRepository<TEntity> Repository<TEntity>()
+            where TEntity : BaseEntity
         {
             var type = typeof(TEntity).Name;
 
