@@ -1,10 +1,4 @@
-﻿
-
-
-
-using System.Threading.Tasks;
-using API.RequestHelper;
-using Core.Interfaces;
+﻿using Core.Interfaces;
 
 namespace API.Controllers
 {
