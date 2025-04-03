@@ -1,12 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using API.Extensions;
-using Core.Entities;
-using Core.Entities.OrderAggregate;
-using Core.Interfaces;
-using Core.Specifications.OrderSpecifications;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Core.Interfaces;
 using Order = Core.Entities.OrderAggregate.Order;
 using Product = Core.Entities.Product;
 
