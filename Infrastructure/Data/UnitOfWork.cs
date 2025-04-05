@@ -15,14 +15,11 @@ namespace Infrastructure.Data
         public IGenericRepository<TEntity> Repository<TEntity>()
             where TEntity : BaseEntity
         {
-            var type = typeof(TEntity).Name;
+            var key = typeof(TEntity).Name;
 
-            return (IGenericRepository<TEntity>)_repositories.GetOrAdd(type, t =>
+            return (IGenericRepository<TEntity>)_repositories.GetOrAdd(key, t =>
             {
-                var repositoryType = typeof(GenericRepository<>).MakeGenericType(typeof(TEntity));
-
-                return Activator.CreateInstance(repositoryType, context)
-                ?? throw new InvalidOperationException($"Couldn't create repository instance for {t}");
+                return new GenericRepository<TEntity>(context);
             });
         }
     }
