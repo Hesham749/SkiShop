@@ -1,12 +1,4 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
-using Core.DTOs;
-using Core.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace API.Controllers
 {

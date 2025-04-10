@@ -1,9 +1,5 @@
-﻿using API.RequestHelper;
-using Core.Entities;
-using Core.Interfaces;
+﻿using Core.Interfaces;
 using Core.Specifications.ProductSpecifications;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
@@ -79,6 +75,6 @@ namespace API.Controllers
             return BadRequest("problem deleting product");
         }
 
-        async Task<bool> ProductExists(int id) => await _unit.Repository<Product>().Exists(id);
+        private async Task<bool> ProductExists(int id) => await _unit.Repository<Product>().Exists(id);
     }
 }
