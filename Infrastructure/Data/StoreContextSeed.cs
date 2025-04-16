@@ -34,7 +34,6 @@ namespace Infrastructure.Data
                 if (products is not null)
                 {
                     context.AddRange(products);
-                    await context.SaveChangesAsync();
                 }
 
             }
@@ -47,9 +46,9 @@ namespace Infrastructure.Data
                 if (deliveryMethods is not null)
                 {
                     context.AddRange(deliveryMethods);
-                    await context.SaveChangesAsync();
                 }
             }
+            await context.SaveChangesAsync();
         }
     }
 }
