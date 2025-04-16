@@ -14,6 +14,7 @@ namespace Infrastructure.Data
             {
                 AppUser user = new()
                 {
+                    Id = Guid.NewGuid().ToString(),
                     Email = "admin@test.com",
                     UserName = "admin@test.com",
                     FirstName = "Hesham",
