@@ -6,9 +6,8 @@ namespace Infrastructure.Data
 {
     public class StoreContextSeed
     {
-        public static async Task SeedAsync(StoreContext context, UserManager<AppUser>? userManager)
+        public static async Task SeedAsync(StoreContext context, UserManager<AppUser> userManager)
         {
-            ArgumentNullException.ThrowIfNull(userManager);
 
             if (!userManager.Users.Any(u => u.UserName == "admin@test.com"))
             {
