@@ -365,3 +365,5 @@ FodyWeavers.xsd
 /API/appsettings.json
 /API/appsettings.json
 /.idea/.idea.SkiShop/.idea
+client/ssl/localhost-key.pem
+client/ssl/localhost.pem
